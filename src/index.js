@@ -10,23 +10,8 @@ connectDB();
 const app = express();
 
 // Middlewares
-const allowedOrigins = [
-  ...(process.env.CLIENT_URL ? process.env.CLIENT_URL.split(',') : []),
-  'http://localhost:3000',
-  'http://127.0.0.1:3000'
-].map(url => url.trim());
-
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow all origins in non-production environments
-    if (!origin || process.env.NODE_ENV !== 'production') {
-      return callback(null, true);
-    }
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error('Blocked by CORS policy'), false);
-  },
+  origin: process.env.CLIENT_URL,
   credentials: true
 }));
 app.use(express.json());
