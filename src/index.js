@@ -11,7 +11,24 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    
+    // Clean protocols and trailing slashes for comparison
+    const cleanOrigin = origin.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    const cleanClient = (process.env.CLIENT_URL || '').replace(/^https?:\/\//, '').replace(/\/$/, '');
+    
+    if (
+      cleanOrigin === cleanClient || 
+      process.env.NODE_ENV !== 'production' || 
+      cleanOrigin === 'localhost:3000' || 
+      cleanOrigin === '127.0.0.1:3000'
+    ) {
+      return callback(null, origin); // Reflect origin back (must include protocol like https://)
+    }
+    
+    return callback(new Error('Blocked by CORS policy'), false);
+  },
   credentials: true
 }));
 app.use(express.json());
