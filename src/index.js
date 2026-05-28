@@ -33,12 +33,21 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Mount Routes
+// Mount Routes (supporting both /api/ prefixes and direct prefixes)
 app.use('/api/auth', require('./routes/auth'));
+app.use('/auth', require('./routes/auth'));
+
 app.use('/api/transactions', require('./routes/transactions'));
+app.use('/transactions', require('./routes/transactions'));
+
 app.use('/api/budgets', require('./routes/budgets'));
+app.use('/budgets', require('./routes/budgets'));
+
 app.use('/api/goals', require('./routes/goals'));
+app.use('/goals', require('./routes/goals'));
+
 app.use('/api/ai', require('./routes/ai'));
+app.use('/ai', require('./routes/ai'));
 
 // Serve Static Assets in Production
 const fs = require('fs');
